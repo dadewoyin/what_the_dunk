@@ -7,11 +7,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 
 NIKE_URL = "https://www.nike.com/launch/t/react-element-87-moss/"
-browser = webdriver.Chrome("./bin/chromedriver_mac")
 delay = 3  # seconds
+
+chrome_options = Options()
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--disable-web-security")
+browser = webdriver.Chrome("./bin/chromedriver_mac", chrome_options=chrome_options)
 
 
 def start():
@@ -21,6 +26,10 @@ def start():
     selectSize()
     addItemToCart()
     goToCheckout()
+    # time.sleep(3) 
+    # login()
+    checkoutAsGuest()
+
 
   except TimeoutException:
     print("Timed out waiting for page to load")
@@ -38,6 +47,7 @@ def addItemToCart():
   action.move_to_element(add_to_cart_button).perform()
   add_to_cart = WebDriverWait(browser, delay).until(
       EC.element_to_be_clickable((By.XPATH, '//button[text()="ADD TO CART"]')))
+  time.sleep(1)
   add_to_cart.click()
 
 def goToCheckout():
@@ -45,6 +55,25 @@ def goToCheckout():
       EC.element_to_be_clickable((By.XPATH, '//a[text()="Checkout"]')))
   checkout_button.click()
 
+def checkoutAsGuest():
+    checkout = WebDriverWait(browser, delay).until(
+        EC.element_to_be_clickable((By.ID, 'qa-guest-checkout')))
+    checkout.click()
+
+# def login():
+#   email_input = WebDriverWait(browser, delay).until(
+#       EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Email"]')))
+#   email_input.send_keys('david@platform.community')
+
+#   password_input = WebDriverWait(browser, delay).until(
+#       EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Password"]')))
+#   password_input.send_keys('dragoon1')
+
+#   time.sleep(3)
+
+#   add_to_cart = WebDriverWait(browser, delay).until(
+#       EC.element_to_be_clickable((By.XPATH, '//input[@value="MEMBER CHECKOUT"]')))
+#   add_to_cart.click()
 
 
 if __name__ == "__main__":
