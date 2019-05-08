@@ -1,7 +1,6 @@
 import os
 import sys
 import six
-import logging.config
 import time
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,31 +8,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
-logging.config.dictConfig({
-  "version": 1,
-  "disable_existing_loggers": False,
-  "formatters": {
-      "default": {
-          "format": "[%(levelname)s] [%(name)s] %(message)s"
-      }
-  },
-  "handlers": {
-    "console": {
-      "class": "logging.StreamHandler",
-      "level": "INFO",
-      "formatter": "default",
-      "stream": "ext://sys.stdout"
-    }
-  },
-  "root": {
-    "level": "INFO",
-    "handlers": [
-      "console"
-    ]
-  }
-})
-
-LOGGER = logging.getLogger()
 NIKE_URL = "https://www.nike.com/launch/t/react-element-87-moss/"
 
 def start():
@@ -53,5 +27,4 @@ def start():
     print("Timed out waiting for page to load")
 
 if __name__ == "__main__":
-  LOGGER.info("Testing the logging")
   start()
