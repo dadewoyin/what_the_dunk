@@ -17,7 +17,7 @@ chrome_options = Options()
 chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--disable-web-security")
 browser = webdriver.Chrome("./bin/chromedriver_mac", chrome_options=chrome_options)
-
+action = ActionChains(browser)
 
 def start():
   browser.get(NIKE_URL)
@@ -44,7 +44,6 @@ def selectSize():
 def addItemToCart():
   add_to_cart_button = browser.find_element_by_xpath(
       '//button[text()="ADD TO CART"]')
-  action = ActionChains(browser)
   action.move_to_element(add_to_cart_button).perform()
   add_to_cart = WebDriverWait(browser, delay).until(
       EC.element_to_be_clickable((By.XPATH, '//button[text()="ADD TO CART"]')))
@@ -77,6 +76,30 @@ def fillOutAddressForm():
   expand_line_2 = WebDriverWait(browser, delay).until(
       EC.presence_of_element_located((By.XPATH, "//button[@class='js-toggle-address-line ncss-btn text-color-grey ncss-base p0-sm']")))
   expand_line_2.click()
+
+  city = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.ID, 'city')))
+  city.send_keys('Bronx')
+
+  state = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.XPATH, "//select[@id='state']/option[text()='New York']")))
+  state.click()
+
+  postal_code = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.ID, 'postalCode')))
+  postal_code.send_keys('10458')
+
+  email = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.ID, 'email')))
+  email.send_keys('dadewoyin16@gmail.com')
+
+  phone_number = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.ID, 'phoneNumber')))
+  phone_number.send_keys('8457415400')
+
+  address_2 = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.XPATH, '//input[@id="address2"]')))
+  address_2.send_keys('Apt. 4')
 
 # def login():
 #   email_input = WebDriverWait(browser, delay).until(
