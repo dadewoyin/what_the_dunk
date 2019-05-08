@@ -29,6 +29,7 @@ def start():
     # time.sleep(3) 
     # login()
     checkoutAsGuest()
+    fillOutAddressForm()
 
 
   except TimeoutException:
@@ -59,6 +60,23 @@ def checkoutAsGuest():
     checkout = WebDriverWait(browser, delay).until(
         EC.element_to_be_clickable((By.ID, 'qa-guest-checkout')))
     checkout.click()
+
+def fillOutAddressForm():
+  first_name = WebDriverWait(browser, delay).until(
+    EC.presence_of_element_located((By.ID, 'firstName')))
+  first_name.send_keys('David')
+
+  password_input = WebDriverWait(browser, delay).until(
+    EC.presence_of_element_located((By.ID, 'lastName')))
+  password_input.send_keys('Adewoyin')
+
+  address_1 = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.ID, 'address1')))
+  address_1.send_keys('2590 Briggs Avenue')
+
+  expand_line_2 = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.XPATH, "//button[@class='js-toggle-address-line ncss-btn text-color-grey ncss-base p0-sm']")))
+  expand_line_2.click()
 
 # def login():
 #   email_input = WebDriverWait(browser, delay).until(
