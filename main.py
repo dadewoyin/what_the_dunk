@@ -10,7 +10,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 
-NIKE_URL = "https://www.nike.com/launch/t/react-element-87-moss/"
+NIKE_URL = "https://www.nike.com/launch/t/air-max-97-haven-clot-white-sail/"
 delay = 3  # seconds
 
 chrome_options = Options()
@@ -26,17 +26,18 @@ def start():
     selectSize()
     addItemToCart()
     goToCheckout()
-    # time.sleep(3) 
+    # time.sleep(3)
     # login()
     checkoutAsGuest()
-    fillOutAddressForm()
-
+    fillOutShippingForm()
+    fillOutPaymentInfo()
+    # SubmitOrder()
 
   except TimeoutException:
     print("Timed out waiting for page to load")
 
 def selectSize():
-  size_element = EC.presence_of_element_located(
+  size_element = EC.element_to_be_clickable(
     (By.XPATH, '//button[text()="M 11 / W 12.5"]'))
   element = WebDriverWait(browser, delay).until(size_element)
   element.click()  # select size
@@ -60,7 +61,7 @@ def checkoutAsGuest():
         EC.element_to_be_clickable((By.ID, 'qa-guest-checkout')))
     checkout.click()
 
-def fillOutAddressForm():
+def fillOutShippingForm():
   first_name = WebDriverWait(browser, delay).until(
     EC.presence_of_element_located((By.ID, 'firstName')))
   first_name.send_keys('David')
@@ -100,6 +101,44 @@ def fillOutAddressForm():
   address_2 = WebDriverWait(browser, delay).until(
       EC.presence_of_element_located((By.XPATH, '//input[@id="address2"]')))
   address_2.send_keys('Apt. 4')
+
+  save_and_continue = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.XPATH, "//button[text()='Save & Continue']")))
+  save_and_continue.click()
+
+  continue_to_payment = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.XPATH, "//button[text()='Continue to Payment']")))
+  continue_to_payment.click()
+
+def fillOutPaymentInfo():
+  print("START OF DIS DAWG")
+  paymentSetup = browser.find_element_by_xpath(
+      '//input[@id="creditCardNumber"]')
+  print("blahhhhhh")
+  action.move_to_element(paymentSetup).perform()
+  print("MOVING HERE YOOOO")
+  card_number = WebDriverWait(browser, 5).until(
+      EC.presence_of_element_located((By.XPATH, '//input[@id="creditCardNumber"]')))
+  print("Another checkerrrr")
+  time.sleep(1)
+  print("we schleeeeeeeep")
+  time.sleep(1)
+  card_number.send_keys('8457415400')
+
+  exp_date = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.ID, 'expirationDate')))
+  exp_date.send_keys('1221')
+
+  cvv = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.ID, 'cvNumber')))
+  cvv.send_keys('457')
+
+
+def SubmitOrder():
+  submit_order = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.XPATH, "//button[text()='Place Order']")))
+  submit_order.click()
+
 
 # def login():
 #   email_input = WebDriverWait(browser, delay).until(
