@@ -26,7 +26,6 @@ def start():
     selectSize()
     addItemToCart()
     goToCheckout()
-    # time.sleep(3)
     # login()
     checkoutAsGuest()
     fillOutShippingForm()
@@ -111,19 +110,14 @@ def fillOutShippingForm():
   continue_to_payment.click()
 
 def fillOutPaymentInfo():
-  print("START OF DIS DAWG")
-  paymentSetup = browser.find_element_by_xpath(
-      '//input[@id="creditCardNumber"]')
-  print("blahhhhhh")
-  action.move_to_element(paymentSetup).perform()
-  print("MOVING HERE YOOOO")
-  card_number = WebDriverWait(browser, 5).until(
+  browser.execute_script(
+      "document.getElementsByClassName('credit-card-iframe')[0].contentWindow.document.getElementById('creditCardNumber').value = '424242424242424'")
+  browser.switch_to.frame(browser.find_element_by_xpath(
+      "//iframe[@class='credit-card-iframe mt1 u-full-width prl2-sm']"))
+
+  card_number = WebDriverWait(browser, 50).until(
       EC.presence_of_element_located((By.XPATH, '//input[@id="creditCardNumber"]')))
-  print("Another checkerrrr")
-  time.sleep(1)
-  print("we schleeeeeeeep")
-  time.sleep(1)
-  card_number.send_keys('8457415400')
+  card_number.send_keys('2')
 
   exp_date = WebDriverWait(browser, delay).until(
       EC.presence_of_element_located((By.ID, 'expirationDate')))
@@ -136,7 +130,7 @@ def fillOutPaymentInfo():
 
 def SubmitOrder():
   submit_order = WebDriverWait(browser, delay).until(
-      EC.presence_of_element_located((By.XPATH, "//button[text()='Place Order']")))
+      EC.element_to_be_clickable((By.XPATH, "//button[text()='Place Order']")))
   submit_order.click()
 
 
