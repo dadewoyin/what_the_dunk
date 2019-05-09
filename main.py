@@ -13,33 +13,58 @@ from selenium.common.exceptions import TimeoutException
 NIKE_URL = "https://www.nike.com/launch/t/air-max-97-haven-clot-white-sail/"
 delay = 3  # seconds
 
-chrome_options = Options()
-chrome_options.add_argument("--disable-extensions")
-chrome_options.add_argument("--disable-web-security")
-browser = webdriver.Chrome("./bin/chromedriver_mac", chrome_options=chrome_options)
+preferences = webdriver.FirefoxProfile()
+preferences.set_preference('security.fileuri.strict_origin_policy', False)
+
+browser = webdriver.Firefox(executable_path="./bin/geckodriver_mac", firefox_profile=preferences)
 action = ActionChains(browser)
 
 def start():
   browser.get(NIKE_URL)
 
   try:
+    login()
     selectSize()
     addItemToCart()
     goToCheckout()
-    # login()
-    checkoutAsGuest()
-    fillOutShippingForm()
-    fillOutPaymentInfo()
+    # checkoutAsGuest()
+    # fillOutShippingForm()
+    # fillOutPaymentInfo()
     # SubmitOrder()
 
   except TimeoutException:
     print("Timed out waiting for page to load")
 
+
+def login():
+  login_button = EC.element_to_be_clickable(
+      (By.XPATH, '//button[text()="Join / Log In"]'))
+  login = WebDriverWait(browser, delay).until(login_button)
+  login.click()  # select size
+
+  email_input = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Email"]')))
+  email_input.send_keys('david@platform.community')
+
+  password_input = WebDriverWait(browser, delay).until(
+      EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Password"]')))
+  password_input.send_keys('qlilmK32t4')
+
+  finalize_login = WebDriverWait(browser, delay).until(
+      EC.element_to_be_clickable((By.XPATH, '//input[@value="LOG IN"]')))
+  finalize_login.click()
+
 def selectSize():
-  size_element = EC.element_to_be_clickable(
-    (By.XPATH, '//button[text()="M 11 / W 12.5"]'))
-  element = WebDriverWait(browser, delay).until(size_element)
-  element.click()  # select size
+
+ last_height = browser.execute_script('document.evaluate("//button[text()=\'M 10 / W 11.5\']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.scrollIntoView()')
+  # size = browser.find_element_by_xpath(
+  #     '//button[text()="M 11 / W 12.5"]')
+  # action.move_to_element(size).perform()
+
+  # size_element = EC.element_to_be_clickable(
+  #   (By.XPATH, '//button[text()="M 11 / W 12.5"]'))
+  # element = WebDriverWait(browser, delay).until(size_element)
+  # element.click()  # select size
 
 def addItemToCart():
   add_to_cart_button = browser.find_element_by_xpath(
@@ -132,22 +157,6 @@ def SubmitOrder():
   submit_order = WebDriverWait(browser, delay).until(
       EC.element_to_be_clickable((By.XPATH, "//button[text()='Place Order']")))
   submit_order.click()
-
-
-# def login():
-#   email_input = WebDriverWait(browser, delay).until(
-#       EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Email"]')))
-#   email_input.send_keys('david@platform.community')
-
-#   password_input = WebDriverWait(browser, delay).until(
-#       EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Password"]')))
-#   password_input.send_keys('dragoon1')
-
-#   time.sleep(3)
-
-#   add_to_cart = WebDriverWait(browser, delay).until(
-#       EC.element_to_be_clickable((By.XPATH, '//input[@value="MEMBER CHECKOUT"]')))
-#   add_to_cart.click()
 
 
 if __name__ == "__main__":
